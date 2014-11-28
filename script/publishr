@@ -1,0 +1,61 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use lib 'lib';
+
+use JSON         ();
+use Getopt::Long ();
+use Publishr::ChannelFactory;
+
+my $config_file = 'publishr.json';
+my $force_channel_name;
+Getopt::Long::GetOptions(
+    'channel=s' => \$force_channel_name,
+    'config=s'  => \$config_file
+) or die("Error in command line arguments\n");
+
+my ($message) = @ARGV;
+die "Usage: <message>\n" unless $message;
+
+$message = JSON::decode_json(_slurp($message));
+
+die "Error: First create '$config_file'\n" unless -f $config_file;
+my $config = JSON::decode_json(_slurp($config_file));
+
+my $factory = Publishr::ChannelFactory->new;
+
+die 'ok';
+my @channels_names =
+  $force_channel_name ? ($force_channel_name) : $factory->list_channels;
+
+foreach my $channel_name (@channels_names) {
+    my $channel =
+      $factory->build($channel_name, %{$config->{$channel_name} || {}});
+
+    print "Publishing '$channel_name'... ";
+
+    eval {
+        $channel->publish($message);
+        print "OK\n";
+    } or do {
+        print "ERROR: $@\n";
+    };
+}
+
+sub _slurp {
+    my ($file) = @_;
+
+    die qq{Error: file '$file' does not exist\n} unless -f $file;
+
+    my $content = '';
+    open my $fh, '<', $file or die "Error: $!\n";
+    while (defined (my $line = <$fh>)) {
+        next if $line =~ m/^\s*#/;
+        $content .= $line;
+    }
+    close $fh;
+
+    return $content;
+}
