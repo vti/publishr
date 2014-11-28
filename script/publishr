@@ -6,6 +6,7 @@ use warnings;
 use lib 'lib';
 
 use JSON         ();
+use Encode       ();
 use Getopt::Long ();
 use Publishr::ChannelFactory;
 
@@ -19,7 +20,7 @@ Getopt::Long::GetOptions(
 my ($message) = @ARGV;
 die "Usage: <message>\n" unless $message;
 
-$message = JSON::decode_json(_slurp($message));
+$message = _parse_message(_slurp($message));
 
 die "Error: First create '$config_file'\n" unless -f $config_file;
 my $config = JSON::decode_json(_slurp($config_file));
@@ -43,6 +44,30 @@ foreach my $channel_name (@channels_names) {
     };
 }
 
+sub _parse_message {
+    my ($content) = @_;
+
+    $content = Encode::decode('UTF-8', $content);
+
+    my $message = {};
+
+    if ($content =~ s{^Status:\s*(.*?)$}{}ms) {
+        $message->{status} = $1;
+    }
+    if ($content =~ s{^Link:\s*(.*?)$}{}ms) {
+        $message->{link} = $1;
+    }
+    if ($content =~ s{^Image:\s*(.*?)$}{}ms) {
+        $message->{image} = $1;
+    }
+
+    $content =~ s{^\s+}{};
+    $content =~ s{\s+$}{};
+    $message->{text} = $content;
+
+    return $message;
+}
+
 sub _slurp {
     my ($file) = @_;
 
@@ -50,7 +75,7 @@ sub _slurp {
 
     my $content = '';
     open my $fh, '<', $file or die "Error: $!\n";
-    while (defined (my $line = <$fh>)) {
+    while (defined(my $line = <$fh>)) {
         next if $line =~ m/^\s*#/;
         $content .= $line;
     }

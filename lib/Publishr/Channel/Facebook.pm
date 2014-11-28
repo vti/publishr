@@ -36,8 +36,11 @@ sub publish {
         }
     );
 
+    my $text = $message->{status};
+    $text .= "\n\n" . $message->{text} if $message->{text};
+
     $fb->post("/$self->{group_id}/feed",
-        {message => $message->{message}, link => $message->{link}});
+        {message => $text, link => $message->{link}});
 
     return $self;
 }

@@ -3,6 +3,7 @@ package Publishr::Channel::Twitter;
 use strict;
 use warnings;
 
+use Encode ();
 use Scalar::Util qw(blessed);
 use Publishr;
 
@@ -30,7 +31,19 @@ sub publish {
 
     my $nt = $self->build_agent;
 
-    eval { $nt->update($message->{title}); } or do {
+    my $status = $message->{status};
+    $status .= ' ' . $message->{link} if $message->{link};
+
+    $status = Encode::encode('UTF-8', $status) if Encode::is_utf8($status);
+
+    eval {
+        if ($message->{image}) {
+            $nt->update_with_media($status, [$message->{image}]);
+        }
+        else {
+            $nt->update($status);
+        }
+    } or do {
         my $e = $@;
 
         die $e unless blessed $e && $e->isa('Net::Twitter::Lite::Error');
