@@ -19,4 +19,11 @@
 #      "group_id":"",
 #      "access_token":""
 #   },
+#
+# VK
+#
+#   "vk" : {
+#       "access_token":"",
+#       "user_id":""
+#   }
 }
