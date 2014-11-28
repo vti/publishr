@@ -1,0 +1,22 @@
+# Comments are supported
+
+{
+# Twitter
+#
+#   "twitter": {
+#       "consumer_key":"",
+#       "consumer_secret":"",
+#       "access_token" : "",
+#       "access_token_secret" : ""
+#   },
+#
+#
+# Facebook
+#
+#   "facebook": {
+#      "app_id":"",
+#      "secret":"",
+#      "group_id":"",
+#      "access_token":""
+#   },
+}

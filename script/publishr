@@ -26,7 +26,6 @@ my $config = JSON::decode_json(_slurp($config_file));
 
 my $factory = Publishr::ChannelFactory->new;
 
-die 'ok';
 my @channels_names =
   $force_channel_name ? ($force_channel_name) : $factory->list_channels;
 
