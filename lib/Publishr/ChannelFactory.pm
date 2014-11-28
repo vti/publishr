@@ -13,7 +13,7 @@ sub new {
 }
 
 sub list_channels {
-    (qw/twitter facebook/);
+    (qw/twitter facebook vk/);
 }
 
 sub build {
