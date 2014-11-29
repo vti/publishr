@@ -2,6 +2,18 @@
 
 Allows updating status on several social networks.
 
+Supported actions:
+
+1. Facebook
+    1. wall (text, link)
+1. Livejournal
+    1. journal (text, link, image, tags)
+    1. community (text, link, image, tags)
+1. Twitter (status + link, image)
+1. VK
+    1. page wall (text, link, image)
+    1. group wall (text, link, image)
+
 ## Preparing message
 
 Mesage is a text file:
@@ -10,6 +22,7 @@ Mesage is a text file:
 Status: New article is out
 Link: http://mywebsite.com
 Image: /path/to/image
+Tags: perl
 
 Just a long text
 with
@@ -28,17 +41,86 @@ Access is configured via a JSON file:
 # Comments are supported
 
 {
-# Twitter configuration
-#   "twitter": {
-#       "consumer_key":"",
-#       "consumer_secret":"",
-#       "access_token" : "",
-#       "access_token_secret" : ""
-#   }
+# First we define access for different channels (types). After giving them names
+# we can reference them in scenarios
+   "access" : [
+      {
+         "name" : "twitter",
+         "options" : {
+            "access_token" : "",
+            "access_token_secret" : "",
+            "consumer_key" : "",
+            "consumer_secret" : ""
+         },
+         "type" : "twitter"
+      },
+      {
+         "name" : "facebook",
+         "options" : {
+            "access_token" : "",
+            "app_id" : "",
+            "secret" : ""
+         },
+         "type" : "facebook"
+      },
+      {
+         "name" : "vk",
+         "options" : {
+            "access_token" : ""
+         },
+         "type" : "vk"
+      },
+      {
+         "name" : "livejournal",
+         "options" : {
+            "password" : "",
+            "username" : ""
+         },
+         "type" : "livejournal"
+      }
+   ],
+
+# Example scenarios
+   "scenarios" : [
+      {
+         "access" : "twitter",
+         "name" : "twitter"
+      },
+      {
+         "access" : "livejournal",
+         "name" : "livejournal"
+      },
+      {
+         "access" : "livejournal",
+         "name" : "livejournal community",
+         "options" : {
+            "usejournal" : ""
+         }
+      },
+      {
+         "name" : "vk wall",
+         "access" : "vk",
+         "options" : {
+            "user_id" : ""
+         }
+      },
+      {
+         "name" : "vk group",
+         "access" : "vk",
+         "options" : {
+            "group_id" : ""
+         }
+      },
+      {
+         "name" : "facebook group",
+         "access" : "facebook",
+         "options" : {
+            "group_id" : ""
+         }
+      }
+   ]
 }
 ```
-
-Every object's key is a service with its configuration.
 
 ## Publishing
 
@@ -51,7 +133,24 @@ perl script/publishr message.txt
 perl script/publishr --config another-config.json message.txt
 ```
 
-## Publishing only to specific channel
+### Dry run
+
+You can check what's going to happen using `--dry-run` option:
+
+```
+perl script/publishr --dry-run message.txt
+```
+
+### Publishing only specific scenario
+
+If you want to publish only to a specific scenario, just use `--scenario`
+option:
+
+```
+perl script/publishr --scenario 'vk wall' message.txt
+```
+
+### Publishing only to specific channel
 
 If you want to publish only to a specific social network, just use `--channel`
 option:
@@ -94,3 +193,7 @@ Has to be done once.
    <https://oauth.vk.com/authorize?client_id={APP_ID}&scope=wall,photos&redirect_uri=http://oauth.vk.com/blank.html&display=page&response_type=token>
 3. Discover your user id.
 3. Save `acess_token` and `user_id`.
+
+## Livejournal
+
+Just use your `username` and `password`.

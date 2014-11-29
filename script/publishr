@@ -5,16 +5,21 @@ use warnings;
 
 use lib 'lib';
 
+use Storable     ();
 use JSON         ();
 use Encode       ();
 use Getopt::Long ();
 use Publishr::ChannelFactory;
 
 my $config_file = 'publishr.json';
-my $force_channel_name;
+my $force_scenario;
+my $force_channel;
+my $dry_run;
 Getopt::Long::GetOptions(
-    'channel=s' => \$force_channel_name,
-    'config=s'  => \$config_file
+    'scenario=s' => \$force_scenario,
+    'channel=s'  => \$force_channel,
+    'dry-run'    => \$dry_run,
+    'config=s'   => \$config_file
 ) or die("Error in command line arguments\n");
 
 my ($message) = @ARGV;
@@ -27,17 +32,22 @@ my $config = JSON::decode_json(_slurp($config_file));
 
 my $factory = Publishr::ChannelFactory->new;
 
-my @channels_names =
-  $force_channel_name ? ($force_channel_name) : $factory->list_channels;
+print "DRY RUN\n\n" if $dry_run;
+foreach my $scenario (@{$config->{scenarios}}) {
+    next if $force_scenario && $scenario->{name} ne $force_scenario;
 
-foreach my $channel_name (@channels_names) {
-    my $channel =
-      $factory->build($channel_name, %{$config->{$channel_name} || {}});
+    my ($access) =
+      grep { $_->{name} eq $scenario->{access} } @{$config->{access}};
+    next if $force_channel && $access->{type} ne $force_channel;
 
-    print "Publishing '$channel_name'... ";
+    print "Publishing to '$scenario->{name}'... ";
 
+    my %options = (%{$access->{options} || {}}, %{$scenario->{options} || {}});
+
+    my $channel = $factory->build($access->{type}, %options);
     eval {
-        $channel->publish($message);
+        my $message_clone = Storable::dclone($message);
+        $channel->publish($message_clone) unless $dry_run;
         print "OK\n";
     } or do {
         print "ERROR: $@\n";
@@ -59,6 +69,9 @@ sub _parse_message {
     }
     if ($content =~ s{^Image:\s*(.*?)$}{}ms) {
         $message->{image} = $1;
+    }
+    if ($content =~ s{^Tags:\s*(.*?)$}{}ms) {
+        $message->{tags} = $1;
     }
 
     $content =~ s{^\s+}{};

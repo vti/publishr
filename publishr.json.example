@@ -1,29 +1,82 @@
 # Comments are supported
 
 {
-# Twitter
-#
-#   "twitter": {
-#       "consumer_key":"",
-#       "consumer_secret":"",
-#       "access_token" : "",
-#       "access_token_secret" : ""
-#   },
-#
-#
-# Facebook
-#
-#   "facebook": {
-#      "app_id":"",
-#      "secret":"",
-#      "group_id":"",
-#      "access_token":""
-#   },
-#
-# VK
-#
-#   "vk" : {
-#       "access_token":"",
-#       "user_id":""
-#   }
+# First we define access for different channels (types). After giving them names
+# we can reference them in scenarios
+   "access" : [
+      {
+         "name" : "twitter",
+         "options" : {
+            "access_token" : "",
+            "access_token_secret" : "",
+            "consumer_key" : "",
+            "consumer_secret" : ""
+         },
+         "type" : "twitter"
+      },
+      {
+         "name" : "facebook",
+         "options" : {
+            "access_token" : "",
+            "app_id" : "",
+            "secret" : ""
+         },
+         "type" : "facebook"
+      },
+      {
+         "name" : "vk",
+         "options" : {
+            "access_token" : ""
+         },
+         "type" : "vk"
+      },
+      {
+         "name" : "livejournal",
+         "options" : {
+            "password" : "",
+            "username" : ""
+         },
+         "type" : "livejournal"
+      }
+   ],
+
+# Example scenarios
+   "scenarios" : [
+      {
+         "access" : "twitter",
+         "name" : "twitter"
+      },
+      {
+         "access" : "livejournal",
+         "name" : "livejournal"
+      },
+      {
+         "access" : "livejournal",
+         "name" : "livejournal community",
+         "options" : {
+            "usejournal" : ""
+         }
+      },
+      {
+         "name" : "vk wall",
+         "access" : "vk",
+         "options" : {
+            "user_id" : ""
+         }
+      },
+      {
+         "name" : "vk group",
+         "access" : "vk",
+         "options" : {
+            "group_id" : ""
+         }
+      },
+      {
+         "name" : "facebook group",
+         "access" : "facebook",
+         "options" : {
+            "group_id" : ""
+         }
+      }
+   ]
 }
