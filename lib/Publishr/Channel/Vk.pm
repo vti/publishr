@@ -17,6 +17,7 @@ sub new {
     $self->{access_token} = $params{access_token};
     $self->{user_id}      = $params{user_id};
     $self->{group_id}     = $params{group_id};
+    $self->{from_group}   = $params{from_group};
 
     return $self;
 }
@@ -80,7 +81,9 @@ sub publish {
     $self->_request(
         "$base_url/wall.post",
         {
-            owner_id     => ($self->{user_id} || -$self->{group_id}),
+            owner_id => ($self->{user_id} || -$self->{group_id}),
+            $self->{group_id}
+              && $self->{from_group} ? (from_group => $self->{from_group}) : (),
             access_token => $self->{access_token},
             message      => $text,
             attachments  => join(',', @attachments)

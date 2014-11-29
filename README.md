@@ -13,6 +13,8 @@ Supported actions:
 1. VK
     1. page wall (text, link, image)
     1. group wall (text, link, image)
+        1. from user
+        1. from group
 
 ## Preparing message
 
