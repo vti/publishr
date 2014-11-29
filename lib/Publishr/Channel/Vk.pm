@@ -16,6 +16,7 @@ sub new {
 
     $self->{access_token} = $params{access_token};
     $self->{user_id}      = $params{user_id};
+    $self->{group_id}     = $params{group_id};
 
     return $self;
 }
@@ -33,7 +34,8 @@ sub publish {
         my $res = $self->_request(
             "$base_url/photos.getWallUploadServer",
             {
-                access_token => $self->{access_token}
+                access_token => $self->{access_token},
+                $self->{group_id} ? (gid => $self->{group_id}) : ()
             }
         );
 
@@ -60,7 +62,8 @@ sub publish {
         $res = $self->_request(
             "$base_url/photos.saveWallPhoto",
             {
-                mid          => $self->{user_id},
+                $self->{user_id}  ? (mid => $self->{user_id})  : (),
+                $self->{group_id} ? (gid => $self->{group_id}) : (),
                 server       => $res->{server},
                 photo        => $res->{photo},
                 hash         => $res->{hash},
@@ -77,7 +80,7 @@ sub publish {
     $self->_request(
         "$base_url/wall.post",
         {
-            owner_id     => $self->{user_id},
+            owner_id     => ($self->{user_id} || -$self->{group_id}),
             access_token => $self->{access_token},
             message      => $text,
             attachments  => join(',', @attachments)
