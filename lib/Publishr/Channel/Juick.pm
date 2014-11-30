@@ -3,7 +3,6 @@ package Publishr::Channel::Juick;
 use strict;
 use warnings;
 
-use Net::XMPP::Client::GTalk;
 use Publishr;
 
 my $TARGET_JID = 'juick@juick.com';
@@ -14,6 +13,9 @@ sub new {
 
     my $self = {};
     bless $self, $class;
+
+    eval { require Net::XMPP::Client::GTalk }
+      or die "Net::XMPP::Client::GTalk is required\n";
 
     $self->{username} = $params{jid};
     $self->{password} = $params{password};
