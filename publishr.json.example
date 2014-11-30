@@ -37,6 +37,14 @@
             "username" : ""
          },
          "type" : "livejournal"
+      },
+      {
+         "name" : "juick",
+         "options" : {
+            "password" : "",
+            "jid" : ""
+         },
+         "type" : "juick"
       }
    ],
 
@@ -45,6 +53,10 @@
       {
          "access" : "twitter",
          "name" : "twitter"
+      },
+      {
+         "access" : "juick",
+         "name" : "juick"
       },
       {
          "access" : "livejournal",

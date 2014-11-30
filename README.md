@@ -6,6 +6,8 @@ Supported actions:
 
 1. Facebook
     1. wall (text, link)
+1. Juick
+    1. blog (text, link, tags)
 1. Livejournal
     1. journal (text, link, image, tags)
     1. community (text, link, image, tags)
@@ -79,6 +81,14 @@ Access is configured via a JSON file:
             "username" : ""
          },
          "type" : "livejournal"
+      },
+      {
+         "name" : "juick",
+         "options" : {
+            "password" : "",
+            "jid" : ""
+         },
+         "type" : "juick"
       }
    ],
 
@@ -87,6 +97,10 @@ Access is configured via a JSON file:
       {
          "access" : "twitter",
          "name" : "twitter"
+      },
+      {
+         "access" : "juick",
+         "name" : "juick"
       },
       {
          "access" : "livejournal",
@@ -199,3 +213,11 @@ Has to be done once.
 ## Livejournal
 
 Just use your `username` and `password`.
+
+## Juick
+
+Link you preffered Jabber ID to your [Juick](https://juick.com) account.
+
+1. Send an IM to juick@juick.com.
+2. Follow the link.
+3. Save `jid` and its `password`.

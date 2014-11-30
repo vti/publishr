@@ -13,7 +13,7 @@ sub new {
 }
 
 sub list_channels {
-    (qw/twitter facebook vk livejournal/);
+    (qw/twitter facebook vk livejournal juick/);
 }
 
 sub build {

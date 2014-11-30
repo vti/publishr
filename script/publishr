@@ -10,6 +10,7 @@ use JSON         ();
 use Encode       ();
 use Getopt::Long ();
 use Publishr::ChannelFactory;
+$|++;
 
 my $config_file = 'publishr.json';
 my $force_scenario;
