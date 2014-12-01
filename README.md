@@ -1,6 +1,6 @@
 # Publishr
 
-Allows updating status on several social networks.
+Allows updating status on several social networks, sending email etc.
 
 Supported actions:
 
@@ -17,6 +17,8 @@ Supported actions:
     1. group wall (text, link, image)
         1. from user
         1. from group
+1. Email
+    1. SMTP
 
 ## Preparing message
 
@@ -89,6 +91,18 @@ Access is configured via a JSON file:
             "jid" : ""
          },
          "type" : "juick"
+      },
+      {
+          "name":"gmail",
+          "type":"email",
+          "options": {
+              "transport": {
+                  "host"     : "smtp.gmail.com",
+                  "port"     : 587,
+                  "username" : "...@gmail.com",
+                  "password" : ""
+              }
+          }
       }
    ],
 
@@ -133,6 +147,16 @@ Access is configured via a JSON file:
          "options" : {
             "group_id" : ""
          }
+      },
+      {
+          "name":"newsletter",
+          "access":"gmail",
+          "options": {
+              "headers":[
+                  "From", "...@gmail.com",
+                  "To", "..@..."
+              ]
+          }
       }
    ]
 }
