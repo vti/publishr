@@ -9,7 +9,9 @@ use Storable     ();
 use JSON         ();
 use Encode       ();
 use Getopt::Long ();
+use Publishr::Message;
 use Publishr::ChannelFactory;
+
 $|++;
 
 my $config_file = 'publishr.json';
@@ -58,28 +60,7 @@ foreach my $scenario (@{$config->{scenarios}}) {
 sub _parse_message {
     my ($content) = @_;
 
-    $content = Encode::decode('UTF-8', $content);
-
-    my $message = {};
-
-    if ($content =~ s{^Status:\s*(.*?)$}{}ms) {
-        $message->{status} = $1;
-    }
-    if ($content =~ s{^Link:\s*(.*?)$}{}ms) {
-        $message->{link} = $1;
-    }
-    if ($content =~ s{^Image:\s*(.*?)$}{}ms) {
-        $message->{image} = $1;
-    }
-    if ($content =~ s{^Tags:\s*(.*?)$}{}ms) {
-        $message->{tags} = $1;
-    }
-
-    $content =~ s{^\s+}{};
-    $content =~ s{\s+$}{};
-    $message->{text} = $content;
-
-    return $message;
+    return Publishr::Message->new->parse($content);
 }
 
 sub _slurp {
