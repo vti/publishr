@@ -3,7 +3,6 @@ package Publishr::Channel::Twitter;
 use strict;
 use warnings;
 
-use Encode ();
 use Scalar::Util qw(blessed);
 use Publishr;
 
@@ -33,8 +32,6 @@ sub publish {
 
     my $status = $message->{status};
     $status .= ' ' . $message->{link} if $message->{link};
-
-    $status = Encode::encode('UTF-8', $status) if Encode::is_utf8($status);
 
     eval {
         if ($message->{image}) {
