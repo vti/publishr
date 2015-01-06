@@ -59,6 +59,8 @@ sub publish {
         }
     );
 
+    die 'Error: Post failed' if $mech->content =~ m/div\s+class="errorwrap"/;
+
     return $self;
 }
 
