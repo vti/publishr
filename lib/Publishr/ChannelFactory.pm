@@ -13,7 +13,18 @@ sub new {
 }
 
 sub list_channels {
-    (qw/twitter facebook vk livejournal juick email/);
+    (
+        qw/
+          twitter
+          facebook
+          vk
+          livejournal
+          juick
+          email
+          vbulletin
+          invisionpb
+          /
+    );
 }
 
 sub build {
