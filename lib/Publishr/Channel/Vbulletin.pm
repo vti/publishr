@@ -46,9 +46,9 @@ sub publish {
     my $charset = IO::HTML::find_charset_in($mech->content);
     if ($charset && $charset !~ /utf-?8/i) {
         for (keys %$message) {
-            $message->{$_} =
-              Encode::from_to(Encode::encode('UTF-8', $message->{$_}),
-                'UTF-8', $charset);
+            my $value = Encode::encode('UTF-8', $message->{$_});
+            Encode::from_to($value, 'UTF-8', $charset);
+            $message->{$_} = $value;
         }
     }
 

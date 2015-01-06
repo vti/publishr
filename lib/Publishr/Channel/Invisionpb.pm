@@ -2,8 +2,9 @@ package Publishr::Channel::Invisionpb;
 
 use strict;
 use warnings;
-use utf8;
 
+use Encode   ();
+use IO::HTML ();
 use Publishr;
 
 sub new {
@@ -31,21 +32,30 @@ sub publish {
     my $mech = WWW::Mechanize->new;
 
     $mech->get($self->{base_url});
-    $mech->follow_link(url_regex => qr/act-Login/);
+    $mech->follow_link(url_regex => qr/act(?:-|=)Login/i);
     $mech->submit_form(fields =>
           {UserName => $self->{username}, PassWord => $self->{password}});
 
     die 'Error: Login failed' if $mech->content =~ m/UserName/;
 
+    my $charset = IO::HTML::find_charset_in($mech->content);
+    if ($charset && $charset !~ /utf-?8/i) {
+        for (keys %$message) {
+            my $value = Encode::encode('UTF-8', $message->{$_});
+            Encode::from_to($value, 'UTF-8', $charset);
+            $message->{$_} = $value;
+        }
+    }
+
     $mech->get($self->{category_url});
 
-    $mech->follow_link(url_regex => qr/act-Post/);
+    $mech->follow_link(url_regex => qr/act(?:-|=)Post/i);
 
     $mech->submit_form(
         fields => {
             TopicTitle => $message->{status},
-            chpyKey    => $message->{tags},
-            Post       => $message->{text}
+            $mech->content =~ m/chpyKey/ ? (chpyKey => $message->{tags}) : (),
+            Post => $message->{text}
         }
     );
 
