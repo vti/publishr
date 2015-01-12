@@ -13,6 +13,7 @@ sub new {
     bless $self, $class;
 
     $self->{cmd} = $params{cmd};
+    $self->{env} = $params{env} || {};
 
     return $self;
 }
@@ -23,11 +24,15 @@ sub publish {
 
     $message->{text} =~ s{\n}{\\n}g;
 
-    my @args = map { "'$_'" } $message->{status},
-      $message->{link},
-      $message->{tags}, $message->{text};
+    my $cmd = $self->{cmd};
 
-    my $cmd = join ' ', $self->{cmd}, @args;
+    for my $key (keys %$message) {
+        $cmd =~ s{%$key%}{$message->{$key}}ge;
+    }
+
+    for my $env (keys %{$self->{env}}) {
+        $ENV{$env} = $self->{env}->{$env};
+    }
 
     system $cmd;
 
