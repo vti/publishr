@@ -39,9 +39,14 @@ sub publish {
     );
     die "$auth[0] - $auth[1]" unless $auth[0] eq 'ok';
 
+    my @text;
+    push @text, join ' ', map { "*$_" } split /\s*,\s*/, $message->{tags};
+    push @text, $message->{status} if $message->{status};
+    push @text, $message->{link}   if $message->{link};
+
     $conn->MessageSend(
         to   => $self->{to},
-        body => $message->{status} . ' ' . $message->{link},
+        body => join(' ', @text),
         type => 'chat',
     );
 
