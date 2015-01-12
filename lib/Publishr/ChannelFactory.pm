@@ -20,6 +20,7 @@ sub list_channels {
           vk
           livejournal
           xmpp
+          irc
           juick
           email
           vbulletin
