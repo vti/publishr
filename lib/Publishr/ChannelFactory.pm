@@ -22,6 +22,7 @@ sub list_channels {
           xmpp
           irc
           juick
+          cmd
           email
           vbulletin
           invisionpb
