@@ -6,8 +6,6 @@ Supported actions:
 
 1. Facebook
     1. wall (text, link)
-1. Juick
-    1. blog (text, link, tags)
 1. Livejournal
     1. journal (text, link, image, tags)
     1. community (text, link, image, tags)
@@ -19,6 +17,12 @@ Supported actions:
         1. from group
 1. Email
     1. SMTP
+1. Jabber/XMPP
+    1. blog (text, link, tags)
+1. IRC
+    1. channel
+1. Skype (via Skype4Py)
+    1. chat room
 
 ## Preparing message
 
@@ -103,7 +107,8 @@ Access is configured via a JSON file:
                   "password" : ""
               }
           }
-      }
+      },
+
    ],
 
 # Example scenarios
@@ -156,6 +161,22 @@ Access is configured via a JSON file:
                   "From", "...@gmail.com",
                   "To", "..@..."
               ]
+          }
+      },
+      {
+          "name":"irc channel",
+          "options":{
+              "hostname":"irc.perl.org",
+              "channel":"#ru.pm"
+          }
+      },
+      {
+          "name":"skype",
+          "options":{
+              "env":{
+                  "PYTHONPATH":"/path/to/skype4py/"
+              },
+              "cmd":"./util/skype-chat.py 'Chat room' '%status% %link%'"
           }
       }
    ]
