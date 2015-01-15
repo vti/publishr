@@ -3,6 +3,7 @@ package Publishr::Channel::Cmd;
 use strict;
 use warnings;
 
+use Carp qw(croak);
 use Publishr;
 
 sub new {
@@ -22,21 +23,28 @@ sub publish {
     my $self = shift;
     my ($message) = @_;
 
-    $message->{text} =~ s{\n}{\\n}g;
+    $message->{text} =~ s{\n}{\\n}g if defined $message->{text};
 
     my $cmd = $self->{cmd};
 
     for my $key (keys %$message) {
-        $cmd =~ s{%$key%}{$message->{$key}}ge;
+        $cmd =~ s{%$key%}{$message->{$key}}g;
     }
 
     for my $env (keys %{$self->{env}}) {
         $ENV{$env} = $self->{env}->{$env};
     }
 
-    system $cmd;
+    $self->_system($cmd);
 
     return $self;
+}
+
+sub _system {
+    my $self = shift;
+    my ($cmd) = @_;
+
+    system $cmd;
 }
 
 1;
