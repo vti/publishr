@@ -34,10 +34,10 @@ sub publish {
     my $status = $message->{status};
     $status .= ' ' . $message->{link} if $message->{link};
 
-    $status = Encode::encode('UTF-8', $status) if Encode::is_utf8($status);
-
     eval {
         if ($message->{image}) {
+            $status = Encode::encode('UTF-8', $status) if Encode::is_utf8($status);
+
             $nt->update_with_media($status, [$message->{image}]);
         }
         else {
