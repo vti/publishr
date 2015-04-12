@@ -24,6 +24,17 @@ Supported actions:
 1. Skype (via Skype4Py)
     1. chat room
 
+## Installation
+
+Download [cpanm](http://search.cpan.org/perldoc?cpanm):
+
+	curl -LO http://xrl.us/cpanm
+
+Install modules using [cpanfile](http://search.cpan.org/perldoc?cpanfile)
+in current directory by --installdeps option of [cpanm](http://search.cpan.org/perldoc?cpanm):
+
+	perl cpanm --installdeps .
+
 ## Preparing message
 
 Mesage is a text file:
